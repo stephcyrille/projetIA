@@ -4,6 +4,7 @@ from predictor.apis.predicton import PostPredictionRequest
 
 urlpatterns = [
   path('post/', PostPredictionRequest.as_view()),
+  path('all/', PostPredictionRequest.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
