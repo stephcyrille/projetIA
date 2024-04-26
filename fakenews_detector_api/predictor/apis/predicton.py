@@ -18,9 +18,19 @@ class PostPredictionRequestGet(APIView):
 class PostPredictionRequestPost(APIView):
     
     def post(self, request):
-        res = {
-            "statusCode": '00201',
-            "message": 'Requête éffectuée avec succès',
-            'status': 'success'
-        }
-        return Response(res, status=status.HTTP_200_OK)
+        serializer=PostRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            predictor_request = serializer.save()
+            print('\n\n')
+            print(predictor_request)
+            print('\n\n')
+
+            predictor_request.prediction = "vrai"
+            predictor_request.save()
+            res = {
+                "prediction": predictor_request.prediction,
+            }
+            return Response(res, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # Exposer uniquement le champ "prediction" pour les requêtes POST a partir du serializer
