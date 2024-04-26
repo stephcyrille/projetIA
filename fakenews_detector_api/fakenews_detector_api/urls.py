@@ -25,7 +25,7 @@ schema_view = get_schema_view(title="Predictor API documentation")
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('apis/v1/doc/', schema_view),
-    path('apis/v1/predictor/', include('predictor.urls')),
+    path('apis/v1/predictor/', include('predictor.urls'))
 ]
 
 # Serve static and media files during development
