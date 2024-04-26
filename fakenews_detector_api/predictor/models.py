@@ -7,4 +7,5 @@ class PostRequest(models.Model):
     titre=models.CharField(max_length=200)
     auteur=models.CharField(max_length=200)
     contenu=models.TextField()
+    prediction=models.CharField(max_length=200, blank=True, null=True)
     
