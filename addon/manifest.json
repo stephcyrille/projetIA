@@ -1,0 +1,12 @@
+{
+  "name": "IA Fake new detector",
+  "version": "1.0.0",
+  "description": "Detecteur de fake news",
+  "manifest_version": 3,
+  "author": "SCMA",
+  "permissions": ["activeTab", "scripting", "tabs"],
+  "action":{
+      "default_popup": "index.html",
+      "default_title": "GEMA IA School Fake news detector"
+  }
+}
