@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'wasm-unsafe-eval' 'inline-speculation-rules' http://localhost:* http://127.0.0.1:*">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <title>IA School Fake new Detector</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+      .tabcontent {
+        display: none;
+        padding: 20px;
+      }
+      .tablinks {
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            color: #333;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .tablinks.active {
+            background-color: #66844e;
+            color: #fff;
+            border-color: #66844e;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 1);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay .loader {
+            font-size: 4em;
+            /* color: #007bff; */
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .closeItem{
+          border-radius: 50%;
+          height: 30px;
+          width: 30px;
+          position: absolute;
+          right: 0;
+          padding-top: 8px;
+          padding-left: 10px;
+          margin-right: 10px;
+        }
+        .closeItem:hover{
+          cursor: pointer;
+          background: #eaeaea;
+          border-radius: 50%;
+          height: 30px;
+          width: 30px;
+        }
+      </style>
+      <script src="./assets/js/script.js"></script>
+  </head>
+  <body>
+    <div style="width: 450px; height: 650px; overflow-y: auto;" class="container py-3 mr-auto">
+      <div>
+        <i class="fas fa-times closeItem" id="closeItemIcon"></i>
+      </div> 
+      <div class="tab py-2 tab py-2 text-center mt-4" id="tab_nav">
+          <button class="tablinks active" id="prediction-tab">Prediction</button>
+          <button class="tablinks" id="predictions-passees-tab">Historique</button>
+      </div>
+
+      <!-- Onglet Prediction -->
+      <div id="prediction" class="tabcontent">
+          <form id="prediction-form">
+              <div class="mb-3">
+                  <label for="auteur" class="form-label">Auteur:</label>
+                  <input type="text" id="auteur" name="auteur" class="form-control">
+              </div>
+
+              <div class="mb-3">
+                  <label for="titre" class="form-label">Titre:</label>
+                  <input type="text" id="titre" name="titre" class="form-control">
+              </div>
+
+              <div class="mb-3">
+                  <label for="url" class="form-label">URL:</label>
+                  <input type="url" id="url" name="url" class="form-control">
+              </div>
+
+              <div class="mb-3">
+                  <label for="contenu" class="form-label">Contenu:</label>
+                  <textarea id="contenu" name="contenu" class="form-control" rows="4"></textarea>
+              </div>
+              
+              <div class="d-grid d-md-block">
+                <button type="submit" class="btn btn-success">Vérifier l'information</button>
+              </div>
+          </form>
+      </div>
+
+      <!-- Onglet Predictions Passées -->
+      <div id="predictions-passees" class="tabcontent p-0">
+          <table id="predictions-table" class="table py-4">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">URL</th>
+                <th scope="col">Auteur</th>
+                <th scope="col" class="text-end">Prédiction</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td><a href="https://france24.com/news/12345" title="Le reveil de la force">france24.com</a></td>
+                <td>France 24</td>
+                <td class="text-end"><i class="fas fa-circle-check text-success"></i></td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td><a href="https://euronews.com/news/12345" title="La revanche des Sith">euronews.com</a></td>
+                <td>Adam L.</td>
+                <td class="text-end"><i class="fas fa-circle-check text-success"></i></td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td><a href="https://cannardhebdo.com/news/12345" title="Le retour du Jedi">canardhebdo.com</a></td>
+                <td>Chad M-L.</td>
+                <td class="text-end"><i class="fas fa-circle-xmark text-danger"></i></td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+
+      <div id="result" class="text-center"> 
+        <div class="position-absolute top-50 start-50 translate-middle" style="width:100%">
+          <img id="resultImg" src="./assets/img/success.png" alt="Thumb up" class="img-fluid w-25" />
+          <h3 id="resultTitle" class="my-4">Information vraie</h3>
+          <p class="p-4" id="resultMsg">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+            Facere qui debitis repellendus, provident nesciunt.
+          </p>
+          <div class="my-4">
+            <button id="backToHome" class="btn btn-light">Révenir au début</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloc de chargement -->
+      <div class="loading-overlay" id="loading-overlay">
+          <div class="loader"><i class="fas fa-cog"></i></div><br>
+          <h4 style="margin-left: 10px">Traitement en cours</h4>
+      </div>
+    </div>
+</body>
+
+
+</html>
